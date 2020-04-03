@@ -3,8 +3,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 0px;
     margin: 0px;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -12,8 +12,8 @@ app {
     position: relative;
     display: flex;
     flex-direction: column;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -41,30 +41,56 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 .buzzerPageBackground {
     background-color: #EEEEEE;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
 }
 
 .chatMessage {
-    display:grid;
+    display: grid;
     grid-template-columns: 1fr 75px;
 }
 
-.messageBox {
+    .chatMessage>div:first-child {
+        word-break: break-all;
+    }
 
+.messageBox {
+    width: 600px;
+    background-color: #F7F7F7;
+    border: 1px solid #CCCCCC;
 }
+
 .messagesBox {
-    height:500px;
-    overflow:auto;
+    height: 500px;
+    overflow: auto;
     display: flex;
     flex-direction: column-reverse;
+}
+
+.messageBox>div:first-child {
+    padding:5px;
+}
+
+.messageBox>div:nth-child(2) {
+    border-top:solid 1px #CCCCCC;
+    padding:5px;
+}
+
+
+
+
+
+.connectedUsers {
+    display: flex;
+    flex-direction: row;
 }

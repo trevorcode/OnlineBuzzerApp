@@ -53,6 +53,52 @@ namespace OnlineBuzzerApp.Server
 
                 await Clients.All.SendAsync("ReceiveBuzzClear", chatMessage);
             }
+            else if (message.StartsWith("/mafia"))
+            {
+                List<string> roles = new List<string>();
+                var commands = message.Split(' ');
+
+                //Set up mafia roles in string list
+                for (int i = 1; i< commands.Length; i++)
+                {
+                    var numberOfType = commands[i].Split(':');
+                    string type = numberOfType[0];
+                    int countOfRole = 0;
+                    int.TryParse(numberOfType[1], out countOfRole);
+                    for (int j = 0; j < countOfRole; j++)
+                    {
+                        roles.Add(type);
+                    }
+                }
+
+                if (ConnectedUsersReal.Count-1 != roles.Count)
+                {
+                    ChatMessage chatMessage = new ChatMessage() { MessageType = MessageType.Notification, Name = user, Message = $"There is a mistmach amount of roles vs connected players." };
+                    await Clients.Caller.SendAsync("ReceiveMessage", chatMessage);
+                    return;
+                }
+
+                foreach(KeyValuePair<string, string> connection in ConnectedUsersReal)
+                {
+                    //If not the game master
+                    if (connection.Key != Context.ConnectionId)
+                    {
+                        Random random = new Random();
+                        var randomNumber = random.Next(0, roles.Count);
+                        string role = roles[randomNumber];
+                        roles.RemoveAt(randomNumber);
+                        ChatMessage chatMessage = new ChatMessage() { MessageType = MessageType.Notification, Name = user, Message = $"Your role is {role}" };
+                        await Clients.Client(connection.Key).SendAsync("ReceiveMessage", chatMessage);
+                        chatMessage = new ChatMessage() { MessageType = MessageType.Notification, Name = user, Message = $"{connection.Value} role is {role}" };
+                        await Clients.Caller.SendAsync("ReceiveMessage", chatMessage);
+                    }
+                    
+                }
+
+                var chatMessage1 = new ChatMessage() { MessageType = MessageType.Notification, Name = user, Message = $"All the roles have been assigned" };
+                await Clients.All.SendAsync("ReceiveMessage", chatMessage1);
+
+            }
             else if (!message.StartsWith('/'))
             {
                 ChatMessage chatMessage = new ChatMessage();
