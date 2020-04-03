@@ -20,8 +20,8 @@ namespace OnlineBuzzerApp.Server
             if (!string.IsNullOrEmpty(BuzzedUser))
             {
                 await Clients.Caller.SendAsync("ReceiveBuzz", BuzzedUser);
-                await Clients.Caller.SendAsync("ReceiveCurrentChatMessages", ChatMessages);
             }
+            await Clients.Caller.SendAsync("ReceiveCurrentChatMessages", ChatMessages);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)

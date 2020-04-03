@@ -4,7 +4,7 @@
 
 @inject NavigationManager NavigationManager
 
-<div class="buzzerPageBackground">
+<div class="buzzerPageBackground" @onkeyup="@(e => HandlePagePress(e))">
     @if (!IsConnected)
     {
         <div class="form-group">
@@ -15,45 +15,48 @@
     }
     else
     {
-
-        <div class="connectedUsers">
-            @foreach (var user in connectedUsers)
-            {
-                <div>@user |</div>
-            }
-        </div>
-
-        <div class="messageBox">
-            <div class="messagesBox">
-                <div class="messagesContainer">
-                    @foreach (var message in messages)
+        <div class="connectedPageContainer">
+            <div class="chatContainer">
+                <div class="connectedUsers">
+                    @foreach (var user in connectedUsers)
                     {
-                        @if (message.MessageType == MessageType.ChatMessage)
-                        {
-                            <div class="chatMessage"><div><b>@message.Name:</b> @message.Message</div><div>@message.DateTime.ToLocalTime().ToShortTimeString()</div></div>
-                        }
-                        else if (message.MessageType == MessageType.Notification)
-                        {
-                            <div class="chatMessage"><div><i>@message.Message</i></div><div>@message.DateTime.ToLocalTime().ToShortTimeString()</div></div>
-                        }
+                        <div>@user | </div>
                     }
                 </div>
-            </div>
-            <div>
-                <label for="messageInput">Chat:</label>
-                <input id="messageInput" @bind="messageInput" @onkeyup="@(e => HandleChatPress(e))" />
-                <button @onclick="Send" disabled="@(!IsConnected)">Send Message</button>
 
-            </div>
-        </div>
+                <div class="messageBox">
+                    <div class="messagesBox">
+                        <div class="messagesContainer">
+                            @foreach (var message in messages)
+                            {
+                                @if (message.MessageType == MessageType.ChatMessage)
+                                {
+                                    <div class="chatMessage"><div><b>@message.Name:</b> @message.Message</div><div>@message.DateTime.ToLocalTime().ToShortTimeString()</div></div>
+                                }
+                                else if (message.MessageType == MessageType.Notification)
+                                {
+                                    <div class="chatMessage"><div><i>@message.Message</i></div><div>@message.DateTime.ToLocalTime().ToShortTimeString()</div></div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <label for="messageInput">Chat:</label>
+                        <input id="messageInput" @bind="messageInput" @onkeyup="@(e => HandleChatPress(e))" />
+                        <button @onclick="Send" disabled="@(!IsConnected)">Send Message</button>
 
-        <div>
-            <h1>Buzzer</h1>
-            @if (!string.IsNullOrEmpty(buzzedUser))
-            {
-                <div>@buzzedUser buzzed in first!</div>
-            }
-            <button @onclick="Buzz">Buzz!</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buzzerContainer">
+                <h1>Buzzer</h1>
+                <button @onclick="Buzz" class="btn btn-success btn-lg btn3d">Buzz!</button>
+                @if (!string.IsNullOrEmpty(buzzedUser))
+                {
+                    <div>@buzzedUser buzzed in first!</div>
+                }
+            </div>
         </div>
     }
 </div>
@@ -146,6 +149,14 @@
         if (args.Key == "Enter")
         {
             await Send();
+        }
+    }
+
+    private async Task HandlePagePress(KeyboardEventArgs args)
+    {
+        if (args.Key == "ArrowDown")
+        {
+            await hubConnection.SendAsync("Buzz", userInput);
         }
     }
 }
