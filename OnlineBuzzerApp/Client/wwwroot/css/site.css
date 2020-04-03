@@ -65,6 +65,9 @@ app {
     .connectedPageContainer {
         grid-template: "." "." / auto;
     }
+    .buzzerPageBackground {
+        padding: 0px;
+    }
 }
 
 
@@ -102,6 +105,10 @@ app {
 .connectedUsers {
     display: flex;
     flex-direction: row;
+}
+
+.connectedUsers>div {
+    margin-right:5px;
 }
 
 .buzzerContainer {
